@@ -22,8 +22,15 @@ var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 	socket.id = Util.generateId();
 	SOCKET_LIST[socket.id] = socket;
-	Player.onConnect(socket);
-    console.log("New Conection - id: ", socket.id)
+
+	socket.on('login', function(data){
+		//TODO: validate playername
+
+		var player = Player.onConnect(socket, data.name);
+	    console.log("New Conection - name: ", player.name, ", id: ", socket.id)
+		socket.emit("loginResponse",{success:true})
+
+	})
 
 	socket.on('disconnect',function(){
 		Player.onDisconnect(socket)
@@ -31,7 +38,7 @@ io.sockets.on('connection', function(socket){
 	});
 
 	socket.on('chatToServer',function(data){
-	   var playerName = socket.id //TODO: real names
+	   var playerName = Player.idToName(socket.id)
 	   Util.broadcast('addToChat', {name: playerName, msg: data});
    });
 

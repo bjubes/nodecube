@@ -1,15 +1,47 @@
-<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
-
-<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
-    <div>Hello!</div>
+<div id="login">
+    <form id="login-form">
+        Username: <input id="login-username" type="text" placeholder="name"></input><br>
+        <input id="play-btn" type="submit" value="Go!"></input>
+    </form>
 </div>
+<div id="game" style="display:none">
+    <canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
 
-<form id="chat-form">
-    <input id="chat-input" type="text" style="width:500px"></input>
-</form>
+    <div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
+        <div>Type below to chat!</div>
+    </div>
+
+    <form id="chat-form">
+        <input id="chat-input" type="text" style="width:500px"></input>
+    </form>
+</div>
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
+    var socket = io();
+
+    //login
+    var loginDiv = document.getElementById('login');
+    var loginForm = document.getElementById('login-form')
+    var loginUsername = document.getElementById('login-username');
+    var gameDiv = document.getElementById('game');
+
+    loginForm.onsubmit = function(e){
+        e.preventDefault();
+        socket.emit('login',{name:loginUsername.value});
+        loginUsername.value = '';
+        console.log(loginUsername.value)
+    }
+
+    socket.on('loginResponse',function(data){
+        if(data.success){
+            loginDiv.style.display = 'none';
+            gameDiv.style.display = 'inline-block';
+        } else {
+            alert("Sign in unsuccessul.");
+        }
+    });
+
 	//chat
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
@@ -20,7 +52,6 @@
 	var ctx = document.getElementById("ctx").getContext("2d");
 	ctx.font = '30px Arial';
 
-	var socket = io();
 	//collection of {id: color}
 	var playerList = {}
 

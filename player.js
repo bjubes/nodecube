@@ -2,7 +2,11 @@ var Util = require('./utilities.js')
 
 var PLAYER_LIST  =  {}
 class Player {
-    constructor(id){
+    constructor(id, name){
+        if(name == ""){
+            name = id //TODO: generate random names
+        }
+        this.name = name;
         this.id = id;
         this.x = 0;
         this.y = 0;
@@ -14,9 +18,9 @@ class Player {
 
     static get speed() {return 10}
 
-    static onConnect(socket) {
+    static onConnect(socket, name) {
         //create a new player server side
-        var player = new Player(socket.id);
+        var player = new Player(socket.id, name);
         player.registerInputHandler(socket);
         Player.sendDeltaInformation(socket)
 
@@ -24,6 +28,7 @@ class Player {
         socket.on('colorOfPlayer', function(id){
             socket.emit("colorOfPlayerResponse", {id: id, color: PLAYER_LIST[id].color})
         });
+        return player;
     }
 
     static onDisconnect(socket) {
@@ -50,6 +55,13 @@ class Player {
         for(var id in PLAYER_LIST) {
             socket.emit("colorOfPlayerResponse", {id: id, color: PLAYER_LIST[id].color})
         }
+    }
+
+    static idToName(id){
+        if (!(id in PLAYER_LIST)){
+            return id
+        }
+        return PLAYER_LIST[id].name
     }
 
     move(){
