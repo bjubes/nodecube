@@ -1,10 +1,12 @@
+var Util = require('./utilities.js')
+
 var PLAYER_LIST  =  {}
 class Player {
     constructor(id){
         this.id = id;
         this.x = 0;
         this.y = 0;
-        this.color = randomColor();
+        this.color = Util.randomColor();
         this.dir = 0 //multiply by pi/2
         //bookkeeping
         PLAYER_LIST[id] = this;
@@ -25,7 +27,7 @@ class Player {
 
     static onDisconnect(socket) {
         delete PLAYER_LIST[socket.id];
-        broadcast("playerDisconnect", {id: socket.id})
+        Util.broadcast("playerDisconnect", {id: socket.id})
     }
 
     registerInputHandler(socket) {
@@ -66,16 +68,6 @@ class Player {
             x: this.x,
             y: this.y
         }
-    }
-}
-
-function randomColor(){
-    return '#'+Math.floor(Math.random()*16777215).toString(16);
-}
-
-function broadcast(msg, data) {
-    for(var i in SOCKET_LIST) {
-        SOCKET_LIST[i].emit(msg, data);
     }
 }
 

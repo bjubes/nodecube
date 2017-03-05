@@ -40,8 +40,6 @@
 				playerList[player.id] = {color:"#000000"};
 			}
 		}
-
-
 	});
 
 	socket.on('colorOfPlayerResponse', function(player){
@@ -55,6 +53,7 @@
 
 	//keyboard events
 	document.onkeydown = function(event){
+		//TODO: bail if user is focused on chat
 	   if(event.keyCode === 68)    //d
 		   socket.emit('keyPress',{dir:0});
 	   else if(event.keyCode === 87) // w
