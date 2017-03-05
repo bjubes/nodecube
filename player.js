@@ -6,28 +6,44 @@ class Player {
         if(name == ""){
             name = id //TODO: generate random names
         }
-        this.name = name;
+        this._name = name;
         this.id = id;
         this.x = 0;
         this.y = 0;
-        this.color = Util.randomColor();
+        this._color = Util.randomColor();
         this.dir = 0 //multiply by pi/2
         //bookkeeping
+
+        //flags
+        this.delta = {} // delta.<attribute> MUST correspond to player.<attribute>
+        this.delta.name = false
+        this.delta.color = false
+
         PLAYER_LIST[id] = this;
     }
 
-    static get speed() {return 10}
+    //setters and getters
+    get name(){return this._name}
+    set name(val){
+        this.delta.name = true
+        this._name = val
+    }
+    get color(){return this._color}
+    set color(val){
+        this.delta.color = true
+        this._color = val
+    }
 
+    //static vars
+    static get speed() {return 1}
+
+    //static events
     static onConnect(socket, name) {
         //create a new player server side
         var player = new Player(socket.id, name);
         player.registerInputHandler(socket);
-        Player.sendDeltaInformation(socket)
-
-        //when client asks for color of player id, then return the color
-        socket.on('colorOfPlayer', function(id){
-            socket.emit("colorOfPlayerResponse", {id: id, color: PLAYER_LIST[id].color})
-        });
+        player.sendNewPlayerInit(socket);
+        player.updateExistingPlayers();
         return player;
     }
 
@@ -50,11 +66,21 @@ class Player {
 
     //sends "per request" information to a new player to catch them up
     //with stuff already happenign in the game
-    static sendDeltaInformation(socket){
-        //color of every existing player
-        for(var id in PLAYER_LIST) {
-            socket.emit("colorOfPlayerResponse", {id: id, color: PLAYER_LIST[id].color})
+    updateExistingPlayers(){
+        //send existing players my info
+        var initPackages = {}
+        initPackages[this.id] = this.updatePacket(true)
+        Util.broadcast("newPlayer", initPackages);
+    }
+
+    sendNewPlayerInit(socket) {
+        //give the new player, this, the information about other players
+        var initPackages = {}
+        for(var i in PLAYER_LIST){
+            var player = PLAYER_LIST[i]
+            initPackages[player.id] = player.updatePacket(true)
         }
+        socket.emit("newPlayer", initPackages)
     }
 
     static idToName(id){
@@ -84,12 +110,18 @@ class Player {
 }
     }
 
-    updatePacket() {
-        return {
+    updatePacket(ignoreDeltas = false) {
+        var pack = {
             id: this.id,
             x: this.x,
             y: this.y
+        };
+        for (var d in this.delta){
+            if (this.delta[d] || ignoreDeltas ){
+                pack[d] = this[d]
+            }
         }
+        return pack
     }
 }
 

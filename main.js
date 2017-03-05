@@ -51,16 +51,16 @@ io.sockets.on('connection', function(socket){
 
 });
 
+//update and send deltas
 setInterval(function(){
 	var pack = [];
 	for(var i in Player.PLAYER_LIST){
 		var player = Player.PLAYER_LIST[i];
 		player.move();
-		pack.push({
-			x:player.x,
-			y:player.y,
-			id:player.id,
-		});
+		pack.push(player.updatePacket());
 	}
-	Util.broadcast('newPositions', pack);
+	if (pack.length == 0) {
+		return;
+	}
+	Util.broadcast('update', {players: pack});
 }, 1000/25);
