@@ -18,6 +18,7 @@ class Player {
         //create a new player server side
         var player = new Player(socket.id);
         player.registerInputHandler(socket);
+        Player.sendDeltaInformation(socket)
 
         //when client asks for color of player id, then return the color
         socket.on('colorOfPlayer', function(id){
@@ -40,6 +41,15 @@ class Player {
             }
             player.dir = data.dir
         });
+    }
+
+    //sends "per request" information to a new player to catch them up
+    //with stuff already happenign in the game
+    static sendDeltaInformation(socket){
+        //color of every existing player
+        for(var id in PLAYER_LIST) {
+            socket.emit("colorOfPlayerResponse", {id: id, color: PLAYER_LIST[id].color})
+        }
     }
 
     move(){

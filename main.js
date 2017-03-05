@@ -23,7 +23,7 @@ io.sockets.on('connection', function(socket){
 	socket.id = Util.generateId();
 	SOCKET_LIST[socket.id] = socket;
 	Player.onConnect(socket);
-    console.log("New Conection. id - ", socket.id)
+    console.log("New Conection - id: ", socket.id)
 
 	socket.on('disconnect',function(){
 		Player.onDisconnect(socket)

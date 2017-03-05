@@ -43,6 +43,9 @@
 	});
 
 	socket.on('colorOfPlayerResponse', function(player){
+        if (!(player.id in playerList)) {
+            playerList[player.id] = {}
+        }
 		playerList[player.id].color = player.color;
 	})
 
