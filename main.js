@@ -18,7 +18,7 @@ SOCKET_LIST = {};
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
-	socket.id = Math.random();
+	socket.id = generateId();
 	SOCKET_LIST[socket.id] = socket;
 	Player.onConnect(socket);
     console.log("New Conection. id - ", socket.id)
@@ -47,3 +47,9 @@ setInterval(function(){
 	}
 
 },1000/25);
+
+function generateId (){
+	//gen a number between 0 and 9 millon, and convert to alphanumeric
+	return (0|Math.random()*9e6).toString(36)
+
+}
