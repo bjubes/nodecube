@@ -5,13 +5,17 @@ class Player {
         this.x = 0;
         this.y = 0;
         this.color = randomColor();
+        this.dir = 0 //multiply by pi/2
+        //bookkeeping
         PLAYER_LIST[id] = this;
     }
+
+    static get speed() {return 10}
 
     static onConnect(socket) {
         //create a new player server side
         var player = new Player(socket.id);
-        Player.registerInputHandler(socket);
+        player.registerInputHandler(socket);
 
         //when client asks for color of player id, then return the color
         socket.on('colorOfPlayer', function(id){
@@ -24,10 +28,36 @@ class Player {
         broadcast("playerDisconnect", {id: socket.id})
     }
 
-    static registerInputHandler(socket) {
-        socket.on('keyPress', function() {
-            console.log("input not implemented");
+    registerInputHandler(socket) {
+        var player = this; //declared outside of callback so "this" scope
+                    // is player, not socket
+        socket.on('keyPress', function(data) {
+            //dir must be number 0-3
+            if (data.dir > 3 || data.dir < 0) {
+                return;
+            }
+            player.dir = data.dir
         });
+    }
+
+    move(){
+        var speed = Player.speed //TODO: muliplier for speed boosts?
+        switch(this.dir) {
+    case 0:
+        this.x += speed;
+        break;
+    case 1:
+        this.y -= speed;
+        break;
+    case 2:
+        this.x -= speed;
+        break;
+    case 3:
+        this.y += speed;
+        break;
+    default:
+        throw errror("direction value is invalid for player ", this.id, " - ", this.dir)
+}
     }
 
     updatePacket() {

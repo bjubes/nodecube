@@ -34,8 +34,7 @@ setInterval(function(){
 	var pack = [];
 	for(var i in Player.PLAYER_LIST){
 		var player = Player.PLAYER_LIST[i];
-		player.x++;
-		player.y++;
+		player.move();
 		pack.push({
 			x:player.x,
 			y:player.y,
