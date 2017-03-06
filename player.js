@@ -15,7 +15,7 @@ class Player {
         //bookkeeping
 
         //flags
-        this.delta = {} // delta.<attribute> MUST correspond to player.<attribute>
+        this.delta = {} // delta.<attribute> MUST correspond to player.<attribute>, otherwise updatePacket will fail
         this.delta.name = false
         this.delta.color = false
 
@@ -54,7 +54,7 @@ class Player {
 
     registerInputHandler(socket) {
         var player = this; //declared outside of callback so "this" scope
-                    // is player, not socket
+                           // is player, not socket
         socket.on('keyPress', function(data) {
             //dir must be number 0-3
             if (data.dir > 3 || data.dir < 0) {
