@@ -7,6 +7,13 @@ var serv = require('http').Server(app);
 var Player = require('./player.js')
 var Util = require('./utilities.js')
 
+//https on heroku
+app.get('*', function(req,res,next) {
+  if(req.headers['x-forwarded-proto'] != 'https' && process.env.NODE_ENV === 'production')
+    res.redirect('https://'+req.hostname+req.url)
+  else
+    next() /* Continue to other routes if we're not redirecting */
+});
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
