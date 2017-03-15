@@ -64,14 +64,14 @@ io.sockets.on('connection', function(socket){
 
 //update and send deltas
 setInterval(function(){
-	var pack = [];
+	var playerPack = [];
 	for(var i in board.playerList){
 		var player = board.playerList[i];
 		player.move();
-		pack.push(player.updatePacket());
+		playerPack.push(player.updatePacket());
 	}
-	if (pack.length == 0) {
+	if (playerPack.length == 0) {
 		return;
 	}
-	Util.broadcast('update', {players: pack});
+	Util.broadcast('update', {players: playerPack, tiles: board.updatePacket() });
 }, 1000/25);

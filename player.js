@@ -95,21 +95,22 @@ class Player {
     move(){
         var speed = Player.speed //TODO: muliplier for speed boosts?
         switch(this.dir) {
-    case 0:
-        this.x += speed;
-        break;
-    case 1:
-        this.y -= speed;
-        break;
-    case 2:
-        this.x -= speed;
-        break;
-    case 3:
-        this.y += speed;
-        break;
-    default:
-        throw errror("direction value is invalid for player ", this.id, " - ", this.dir)
-}
+            case 0:
+                this.x += speed;
+                break;
+            case 1:
+                this.y -= speed;
+                break;
+            case 2:
+                this.x -= speed;
+                break;
+            case 3:
+                this.y += speed;
+                break;
+            default:
+                throw errror("direction value is invalid for player ", this.id, " - ", this.dir)
+        }
+        this.board.onPlayerMoved(this);
     }
 
     updatePacket(ignoreDeltas = false) {
