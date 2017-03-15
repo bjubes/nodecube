@@ -1,4 +1,3 @@
-//app.js
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
@@ -6,6 +5,7 @@ var serv = require('http').Server(app);
 //custom requires
 var Player = require('./player.js')
 var Util = require('./utilities.js')
+var Board = require('./board.js')
 
 //https on heroku
 app.get('*', function(req,res,next) {
@@ -24,16 +24,20 @@ console.log("Server started.");
 
 DEBUG = process.env.DEBUG
 SOCKET_LIST = {};
+var board = new Board(500,500);
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 	socket.id = Util.generateId();
+    //give the socket the board of the player. fix later since socket should be agnostic
+    socket.board = board;
 	SOCKET_LIST[socket.id] = socket;
 
 	socket.on('login', function(data){
 		//TODO: validate playername
 
-		var player = Player.onConnect(socket, data.name);
+
+		var player = Player.onConnect(socket, data.name, board);
 	    console.log("New Conection - name: ", player.name, ", id: ", socket.id)
 		socket.emit("loginResponse",{success:true})
 
@@ -45,7 +49,7 @@ io.sockets.on('connection', function(socket){
 	});
 
 	socket.on('chatToServer',function(data){
-	   var playerName = Player.idToName(socket.id)
+	   var playerName = Player.idToName(socket.id, board)
 	   Util.broadcast('addToChat', {name: playerName, msg: data});
    });
 
@@ -61,8 +65,8 @@ io.sockets.on('connection', function(socket){
 //update and send deltas
 setInterval(function(){
 	var pack = [];
-	for(var i in Player.PLAYER_LIST){
-		var player = Player.PLAYER_LIST[i];
+	for(var i in board.playerList){
+		var player = board.playerList[i];
 		player.move();
 		pack.push(player.updatePacket());
 	}

@@ -1,11 +1,12 @@
 var Util = require('./utilities.js')
+var Board = require('./board.js')
 
-var PLAYER_LIST  =  {}
 class Player {
-    constructor(id, name){
+    constructor(id, name, board){
         if(name == ""){
             name = id //TODO: generate random names
         }
+        this.board = board;
         this._name = name;
         this.id = id;
         this.x = 0;
@@ -19,7 +20,7 @@ class Player {
         this.delta.name = false
         this.delta.color = false
 
-        PLAYER_LIST[id] = this;
+        this.board.playerList[id] = this;
     }
 
     //setters and getters
@@ -38,9 +39,9 @@ class Player {
     static get speed() {return 1}
 
     //static events
-    static onConnect(socket, name) {
+    static onConnect(socket, name, board) {
         //create a new player server side
-        var player = new Player(socket.id, name);
+        var player = new Player(socket.id, name, board);
         player.registerInputHandler(socket);
         player.sendNewPlayerInit(socket);
         player.updateExistingPlayers();
@@ -48,7 +49,7 @@ class Player {
     }
 
     static onDisconnect(socket) {
-        delete PLAYER_LIST[socket.id];
+        delete socket.board.playerList[socket.id]
         Util.broadcast("playerDisconnect", {id: socket.id})
     }
 
@@ -76,18 +77,19 @@ class Player {
     sendNewPlayerInit(socket) {
         //give the new player, this, the information about other players
         var initPackages = {}
-        for(var i in PLAYER_LIST){
-            var player = PLAYER_LIST[i]
+        for(var i in this.board.playerList){
+            var player = this.board.playerList[i]
             initPackages[player.id] = player.updatePacket(true)
         }
         socket.emit("newPlayer", initPackages)
     }
 
     static idToName(id){
-        if (!(id in PLAYER_LIST)){
+        var player = Board.getPlayerFromId(id);
+        if (player == undefined){
             return id
         }
-        return PLAYER_LIST[id].name
+        return player.name
     }
 
     move(){
@@ -126,4 +128,3 @@ class Player {
 }
 
 module.exports = Player;
-module.exports.PLAYER_LIST = PLAYER_LIST;
