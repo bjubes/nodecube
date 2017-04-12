@@ -18,7 +18,6 @@ class Board {
         this.length = length;
         this.width = width;
         this.tiles = Array.apply(null, Array(width)).map(e => Array(length));
-        console.log(this.tiles);
     }
 }
 
@@ -78,12 +77,12 @@ setInterval(function(){
         for (var y = 0; y < board.length; y++) {
 
             var playerId = board.tiles[x][y]
-            if (playerId == undefined){continue}
+            if (playerId == undefined || playerList[playerId] == undefined){continue}
             //console.log("x:" + x + " , " + "y:" + y);
             if(x > 498){
                 console.log(x);
             }
-            ctx.fillStyle = playerList[playerId].color + "22"
+            ctx.fillStyle = playerList[playerId].color
             ctx.fillRect(x*size - size/2, y*size - size/2,size,size)
         }
     }

@@ -60,6 +60,16 @@ class Board {
         this.setTile(x,y,player.id);
     }
 
+    //needs to be optimized
+    removePlayer(player){
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < length; y++) {
+                if (this._tiles[x][y] == player.id){
+                    setTile(x,y,undefined)
+                }
+            }
+        }
+    }
 
     updatePacket(ignoreDeltas = false) {
         if (ignoreDeltas){return tiles}
