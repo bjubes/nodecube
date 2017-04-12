@@ -27,6 +27,9 @@ class Board {
     }
 
     setTile(x,y,value){
+        //dont trigger deltas for unchanged tiles
+        if(x < 0 || y < 0 || this._tiles[x][y] == value) {return}
+
         this._tiles[x][y] = value;
         this.dtiles.push({x:x,y:y})
     }
@@ -66,6 +69,7 @@ class Board {
             var y = this.dtiles[i].y
             var id = this.tiles[x][y]
             pack.push({x:x,y:y,id:id})
+            console.log("x:" + x + " , " + "y:" + y);
         }
         this.dtiles = []
         return pack

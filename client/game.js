@@ -14,16 +14,11 @@ class Player {
 }
 
 class Board {
-    constructor(length, width, tiles ={}){
+    constructor(length, width){
         this.length = length;
         this.width = width;
-        this.tiles = [[]] //2d array of ids x,y
-        for (var x = 0; x < width; x++) {
-            this.tiles[x] = []
-            for (var y = 0; y < length; y++) {
-                this.tiles[x][y] = undefined;
-            }
-        }
+        this.tiles = Array.apply(null, Array(width)).map(e => Array(length));
+        console.log(this.tiles);
     }
 }
 
@@ -62,7 +57,11 @@ socket.on('update',function(delta){
     }
     for (var i = 0; i < delta.tiles.length; i++) {
         var tile = delta.tiles[i]
-        board.tiles[tile.x,tile.y] = tile.id
+        if (tile.x > 4){
+            console.log(tile);
+        }
+
+        board.tiles[tile.x][tile.y] = tile.id
         //console.log("tile x:",tile.x," y:",tile.y," belongs to ",tile.id);
     }
 });
@@ -77,10 +76,15 @@ setInterval(function(){
 	}
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.length; y++) {
-            var tile = board.tiles[x][y]
-            if (tile == undefined){continue}
-            ctx.fillStyle = "#333333"
-            ctx.fillRect(tile.x*size - size/2, tile.y*size - size/2,size,size)
+
+            var playerId = board.tiles[x][y]
+            if (playerId == undefined){continue}
+            //console.log("x:" + x + " , " + "y:" + y);
+            if(x > 498){
+                console.log(x);
+            }
+            ctx.fillStyle = playerList[playerId].color + "22"
+            ctx.fillRect(x*size - size/2, y*size - size/2,size,size)
         }
     }
 }, 1000/25);
@@ -102,6 +106,3 @@ document.onkeydown = function(event){
    else if(event.keyCode === 83)   //s
 	 socket.emit('keyPress',{dir:3});
 }
-
-
-//chat
