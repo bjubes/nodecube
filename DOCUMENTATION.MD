@@ -1,4 +1,5 @@
-This documents every single socket.io event and states its purpose, data attributes, and such.
+# Socket.io Event Documentation
+This file documents every single socket.io event and states its purpose, data attributes, and such.
 
 ## Socket Level Events
 ### login
@@ -71,7 +72,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### keyPress
 **Sent by:** Client
 
-**Description:** Sends  direction data to client when a player hits a directional key that frame
+**Description:** Sends direction data to client when a player hits a directional key that frame
 
 **Data:**
 
@@ -84,7 +85,7 @@ This documents every single socket.io event and states its purpose, data attribu
 
 **Sent by:** Server
 
-**Description:** Sends  id of player to other clients upon player disconnecting
+**Description:** Sends id of player to other clients upon player disconnecting
 
 **Data:**
     {
@@ -108,7 +109,7 @@ This documents every single socket.io event and states its purpose, data attribu
 
 **Sent by:** Client
 
-**Description:** Sends  chat message to server for distribution.
+**Description:** Sends chat message to server for distribution.
  Note: user is determined by the socket of the sender, not by any data passed
 
 **Data:**
@@ -120,7 +121,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### addToChat
 **Sent by:** Server
 
-**Description:** Sendschat message and sender to each client
+**Description:** Sends chat message and sender to each client
 
 **Data:**
 
