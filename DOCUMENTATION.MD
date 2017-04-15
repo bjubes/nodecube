@@ -39,7 +39,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### newPlayer
 **Sent by:** Server
 
-**Description:**Sends player data initPackage to clients about a player who has joined the board
+**Description:** Sends  player data initPackage to clients about a player who has joined the board
 
 **Data:**
 
@@ -54,7 +54,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### newBoard
 **Sent by:** Server
 
-**Description:**Sends board data to clients when a board is created or they join a board.
+**Description:** Sends  board data to clients when a board is created or they join a board.
 
 **Data:**
 
@@ -71,7 +71,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### keyPress
 **Sent by:** Client
 
-**Description:**Sends direction data to client when a player hits a directional key that frame
+**Description:** Sends  direction data to client when a player hits a directional key that frame
 
 **Data:**
 
@@ -84,7 +84,7 @@ This documents every single socket.io event and states its purpose, data attribu
 
 **Sent by:** Server
 
-**Description:**Sends id of player to other clients upon player disconnecting
+**Description:** Sends  id of player to other clients upon player disconnecting
 
 **Data:**
     {
@@ -94,7 +94,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### update
 **Sent by:** Server
 
-**Description:**Sends delta game information every tick
+**Description:** Sends  delta game information every tick
 
 **Data:**
     {
@@ -108,7 +108,7 @@ This documents every single socket.io event and states its purpose, data attribu
 
 **Sent by:** Client
 
-**Description:**Sends chat message to server for distribution.
+**Description:** Sends  chat message to server for distribution.
  Note: user is determined by the socket of the sender, not by any data passed
 
 **Data:**
@@ -120,7 +120,7 @@ This documents every single socket.io event and states its purpose, data attribu
 ### addToChat
 **Sent by:** Server
 
-**Description:**Sends chat message and sender to each client
+**Description:** Sendschat message and sender to each client
 
 **Data:**
 

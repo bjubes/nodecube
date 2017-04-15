@@ -71,8 +71,17 @@ class Board {
         }
     }
 
+    sendBoardInit(socket) {
+        //give the new player information the board
+        var initPackage = {}
+        initPackage.length = this.length;
+        initPackage.width = this.width;
+        initPackage.tiles = this.updatePacket(true);
+        socket.emit("newBoard", initPackage)
+    }
+
     updatePacket(ignoreDeltas = false) {
-        if (ignoreDeltas){return tiles}
+        if (ignoreDeltas){return this.tiles}
         var pack = []
         for (var i = 0; i < this.dtiles.length; i++) {
             var x = this.dtiles[i].x

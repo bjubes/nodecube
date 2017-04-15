@@ -14,15 +14,16 @@ class Player {
 }
 
 class Board {
-    constructor(length, width){
-        this.length = length;
-        this.width = width;
-        this.tiles = Array.apply(null, Array(width)).map(e => Array(length));
+    constructor(initPackage){
+        this.length = initPackage.length;
+        this.width = initPackage.width;
+        this.tiles = initPackage.tiles;
+        //for empty 2d array: Array.apply(null, Array(width)).map(e => Array(length));
     }
 }
 
 
-//TODO: put this in a real call, for now assuming board is 500,500
+//TODO: make it so game doesnt error if this isnt instanciated before all loops and whatnot
 var board = new Board(500,500)
 
 
@@ -33,6 +34,10 @@ socket.on('newPlayer', function(initPackages){
         var initPackage = initPackages[i]
         new Player(initPackage)
     }
+})
+
+socket.on('newBoard', function(initPackage){
+    board = new Board(initPackage)
 })
 
 socket.on('update',function(delta){
@@ -56,10 +61,6 @@ socket.on('update',function(delta){
     }
     for (var i = 0; i < delta.tiles.length; i++) {
         var tile = delta.tiles[i]
-        if (tile.x > 4){
-            console.log(tile);
-        }
-
         board.tiles[tile.x][tile.y] = tile.id
         //console.log("tile x:",tile.x," y:",tile.y," belongs to ",tile.id);
     }
@@ -79,9 +80,7 @@ setInterval(function(){
             var playerId = board.tiles[x][y]
             if (playerId == undefined || playerList[playerId] == undefined){continue}
             //console.log("x:" + x + " , " + "y:" + y);
-            if(x > 498){
-                console.log(x);
-            }
+
             ctx.fillStyle = playerList[playerId].color
             ctx.fillRect(x*size - size/2, y*size - size/2,size,size)
         }

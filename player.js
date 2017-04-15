@@ -44,6 +44,7 @@ class Player {
         var player = new Player(socket.id, name, board);
         player.registerInputHandler(socket);
         player.sendNewPlayerInit(socket);
+        player.board.sendBoardInit(socket);
         player.updateExistingPlayers();
         return player;
     }
